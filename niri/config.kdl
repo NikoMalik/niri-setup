@@ -1,0 +1,681 @@
+// ~/.config/niri/config.kdl
+prefer-no-csd
+
+// =====================
+//   ENVIRONMENT
+// spawn-at-startup "xwayland-satellite"
+	
+
+environment {
+    MOZ_ENABLE_WAYLAND "1"
+    ELECTRON_OZONE_PLATFORM_HINT "wayland"
+    XDG_CURRENT_DESKTOP "niri"
+    XDG_SESSION_TYPE "wayland"
+    XDG_SESSION_DESKTOP "niri"
+    SDL_VIDEODRIVER "wayland"
+    QT_QPA_PLATFORM "wayland"
+    CLUTTER_BACKEND "wayland"
+
+    // NVIDIA 
+    LIBVA_DRIVER_NAME "nvidia"
+    GBM_BACKEND "nvidia-drm"
+    VDPAU_DRIVER "nvidia"
+    __GLX_VENDOR_LIBRARY_NAME "nvidia"
+    __EGL_VENDOR_LIBRARY_NAME "nvidia"
+    __EGL_VENDOR_LIBRARY_FILENAMES "/usr/share/glvnd/egl_vendor.d/10_nvidia.json"
+    __VK_LAYER_NV_optimus "NVIDIA_only"
+    __NV_PRIME_RENDER_OFFLOAD "1"
+    WLR_NO_HARDWARE_CURSORS "1"
+
+    // Java and D-Bus
+    _JAVA_AWT_WM_NONREPARETING "1"
+    MOZ_DBUS_REMOTE "1"
+
+    // DISPLAY/WAYLAND
+    WAYLAND_DISPLAY "wayland-1"
+    DISPLAY ":0"
+}
+
+spawn-at-startup "dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
+spawn-at-startup "gentoo-pipewire-launcher"
+spawn-at-startup "sh" "-c" "foot --server"
+spawn-at-startup "~/.config/niri/start"
+spawn-at-startup "waybar"
+spawn-at-startup "flameshot"
+spawn-at-startup "sh" "-c" "swaybg -m fill -i ~/pictures/win95_clouds.png"
+
+
+layer-rule {
+	match namespace="^wallpaper$"
+    place-within-backdrop true
+	match at-startup=true
+}
+
+overview {
+    zoom 0.4
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+
+gestures {
+    hot-corners {
+        off
+    }
+}
+
+cursor {
+    hide-when-typing
+	xcursor-size 18
+    hide-after-inactive-ms 10000
+}
+
+// =====================
+//   MONITOR SETTINGS
+// =====================
+output "HDMI-A-1" {
+    mode "1920x1080@143.981"
+    scale 1
+	position x=0 y=0
+    transform "normal"
+}
+
+
+// =====================
+//   INPUT DEVICES
+// =====================
+input {
+	mod-key "Alt"
+
+    keyboard {
+        xkb {
+            layout "us,ru"
+            options "grp:caps_toggle"
+        }
+		repeat-delay 200
+        repeat-rate 50
+
+    }
+
+	mouse {
+        // off
+        // natural-scroll
+        // accel-speed 0.2
+        accel-profile "flat"
+    }
+
+
+    touchpad {
+        tap
+    }
+	disable-power-key-handling
+	focus-follows-mouse max-scroll-amount="0%"
+
+
+}
+
+window-rule {
+    geometry-corner-radius 10
+    clip-to-geometry true
+}
+
+window-rule {
+    // Match all Telegram windows...
+    match app-id=r#"^org\.telegram\.desktop$"#
+
+    // ...except the media viewer window.
+    exclude title="^Media viewer$"
+
+    // Properties to apply.
+    open-on-output "HDMI-A-1"
+}
+
+
+
+// Indicate screencasted windows with red colors.
+window-rule {
+    match is-window-cast-target=true
+
+    focus-ring {
+
+        active-color "#f38ba8"
+        inactive-color "#7d0d2d"
+    }
+
+    border {
+        inactive-color "#7d0d2d"
+    }
+
+
+    tab-indicator {
+        active-color "#f38ba8"
+        inactive-color "#7d0d2d"
+    }
+}
+
+
+// =====================
+//   STARTUP PROGRAMS
+// =====================
+//spawn-at-startup "waybar"
+
+
+// =====================
+//   LAYOUT & LOOK
+// =====================
+layout {
+    gaps 10
+	always-center-single-column
+	center-focused-column "never"
+	preset-column-widths {
+        proportion 0.5
+        proportion 1.0
+    }
+	 default-column-width { proportion 0.5; }
+    focus-ring {
+        width 1.5
+        active-color "#7fb4caff"
+        inactive-color "#0d0c0cff"
+    }
+    border {
+        off
+    }
+
+	shadow {
+        // on
+
+        softness 30
+        spread 5
+        offset x=0 y=5
+        color "#0007"
+    }
+	background-color "transparent"
+}
+
+
+// Flameshot
+window-rule {
+	match app-id="flameshot-pin"
+	open-floating true
+	focus-ring {
+		width 4
+	}
+}
+
+window-rule {
+	match app-id="flameshot gui"
+	open-floating true
+}
+
+
+window-rule {
+	match app-id="flameshot" title="Save screenshot"
+	open-floating true
+}
+
+
+window-rule {
+    match app-id="qimgv"
+    open-floating true
+}
+
+window-rule {
+    match app-id=r#"^org\.telegram\.desktop$"# title="^Media viewer$"
+    open-fullscreen false
+    open-floating true
+	open-maximized false
+    // default-column-width { proportion 0.5; }
+}
+
+window-rule {
+    match at-startup=true app-id=r#"^org\.telegram\.desktop$"#
+    exclude title="^Media viewer$"
+
+    open-on-workspace "chat"
+}
+
+
+// Float rule
+window-rule {
+    match title="Special Offers"
+    match title="Friends List"
+    match title="Steam Settings"
+    match app-id="org.kde.kcalc"
+    match app-id="blueman-manager"
+    match title="Bluetooth"
+    match app-id=r#"^blueberry*"#
+    match app-id="org.kde.kdeconnect.app"
+    match app-id="nm-connection-editor"
+    match app-id="org.kde.polkit-kde-authentication-agent-1"
+    match app-id="polkit-gnome-authentication-agent-1"
+    match title="gtk*"
+    match app-id="nwg-look"
+    match app-id="qt6ct"
+    match app-id="qt5ct"
+    match app-id="firefox" title="Picture-in-Picture"
+    match app-id="floorp" title="Picture-in-Picture"
+    match app-id="zen" title="Picture-in-Picture"
+    match app-id="xdg-desktop-portal-gtk"
+    match app-id="org.pulseaudio.pavucontrol"
+    match title="popup title with spaces"
+    match title="zoom"
+    match title="Picture-in-Picture"
+
+    open-floating true
+    open-focused true
+}
+
+window-rule {
+    match title="zen"
+
+    open-on-workspace "1"
+}
+
+
+
+
+// =====================
+//   SCREENSHOT SETTINGS
+// =====================
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+
+// =====================
+//   ANIMATIONS
+// =====================
+
+animations {
+    // off
+    // slowdown 100
+    // slowdown 10
+    // slowdown 4
+    // slowdown 3
+    // slowdown 2
+    // slowdown 1.5
+    // slowdown 1.2
+
+    workspace-switch {
+        off
+        // duration-ms 500
+        // curve "linear"
+        // curve "ease-out-cubic"
+        // curve "cubic-bezier" 0 1.5 0.5 1
+        // spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+		// spring damping-ratio=2.5 stiffness=2000 epsilon=0.001
+
+    }
+
+    overview-open-close {
+        // spring damping-ratio=1.0 stiffness=400 epsilon=0.0001
+        // spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.001
+        // spring damping-ratio=6.0 stiffness=1200 epsilon=0.0001
+        // curve "linear"
+        // duration-ms 50
+    }
+
+    window-open {
+        // off
+        // duration-ms 2500
+        // curve "ease-out-expo"
+        spring damping-ratio=0.8 stiffness=1000 epsilon=0.0001
+        // duration-ms 1000
+        // curve "linear"
+
+        // custom-shader r"
+        //     vec4 open_color(vec3 coords_geo, vec3 size_geo) {
+        //         vec3 coords_tex = niri_geo_to_tex * coords_geo;
+        //         vec4 color = texture2D(niri_tex, coords_tex.st);
+        //
+        //         vec2 size = size_geo.xy;
+        //         vec2 coords = (coords_geo.xy - vec2(0.5, 0.5)) * size * 2.0;
+        //
+        //         // Some padding for borders and shadows.
+        //         float pad = 8.0;
+        //         coords = coords + vec2(pad, pad);
+        //         size = size + vec2(pad, pad) * 2.0;
+        //
+        //         coords = coords / length(size);
+        //         float p = niri_clamped_progress;
+        //         if (p * p <= dot(coords, coords))
+        //             color = vec4(0.0);
+        //
+        //         return color;
+        //     }
+        // "
+
+        custom-shader r"
+            vec4 open_color(vec3 coords_geo, vec3 size_geo) {
+                vec3 coords_tex = niri_geo_to_tex * coords_geo;
+                vec4 color = texture2D(niri_tex, coords_tex.st);
+
+                return color;
+            }
+        "
+    }
+
+    window-close {
+        // off
+        // duration-ms 2500
+        // duration-ms 1000
+        // duration-ms 250
+        // curve "linear"
+        spring damping-ratio=0.8 stiffness=1000 epsilon=0.0001
+
+        // custom-shader r"
+        //     mat2 rotate(float angle) {
+        //         return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+        //     }
+        //
+        //     vec4 close_color(vec3 coords_geo, vec3 size_geo) {
+        //         float progress = niri_clamped_progress * niri_clamped_progress;
+        //
+        //         vec2 coords = (coords_geo.xy - vec2(0.5, 1.0)) * size_geo.xy;
+        //
+        //         coords.y -= progress * 200.0;
+        //
+        //         float random = (niri_random_seed - 0.5) / 2.0;
+        //         random = sign(random) - random;
+        //         float max_angle = 0.05 * random;
+        //
+        //         float angle = progress * max_angle;
+        //         coords = rotate(angle) * coords;
+        //
+        //         coords_geo = vec3(coords / size_geo.xy + vec2(0.5, 1.0), 1.0);
+        //
+        //         vec3 coords_tex = niri_geo_to_tex * coords_geo;
+        //         vec4 color = texture2D(niri_tex, coords_tex.st);
+        //
+        //         return color * (1.0 - niri_clamped_progress);
+        //     }
+        // "
+
+        /-custom-shader r"
+            vec4 close_color(vec3 coords_geo, vec3 size_geo) {
+                vec3 coords_tex = niri_geo_to_tex * coords_geo;
+                vec4 color = texture2D(niri_tex, coords_tex.st);
+
+                return color;
+            }
+        "
+    }
+
+    horizontal-view-movement {
+        // off
+        // duration-ms 500
+        curve "ease-out-cubic"
+        // spring damping-ratio=1.0 stiffness=20 epsilon=0.00001
+        // spring damping-ratio=10.0 stiffness=800 epsilon=0.0001
+    }
+
+    window-movement {
+        // off
+        // duration-ms 750
+        // curve "ease-out-cubic"
+        // spring damping-ratio=1.0 stiffness=20 epsilon=0.00001
+        spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+    }
+
+    window-resize {
+        // off
+        // duration-ms 500
+        // duration-ms 2500
+        // curve "ease-out-cubic"
+        // spring damping-ratio=0.2 stiffness=800 epsilon=0.0001
+
+        /-custom-shader r"
+            vec4 resize_color(vec3 coords_curr_geo, vec3 size_curr_geo) {
+                vec3 coords_next_geo = niri_curr_geo_to_next_geo * coords_curr_geo;
+                vec3 coords_prev_geo = niri_curr_geo_to_prev_geo * coords_curr_geo;
+
+                vec3 coords_crop = niri_geo_to_tex_next * coords_next_geo;
+                vec3 coords_stretch = niri_geo_to_tex_next * coords_curr_geo;
+                vec3 coords_stretch_prev = niri_geo_to_tex_prev * coords_curr_geo;
+
+                // We can crop if the current window size is smaller than the next window
+                // size. One way to tell is by comparing to 1.0 the X and Y scaling
+                // coefficients in the current-to-next transformation matrix.
+                bool can_crop_by_x = niri_curr_geo_to_next_geo[0][0] <= 1.0;
+                bool can_crop_by_y = niri_curr_geo_to_next_geo[1][1] <= 1.0;
+                bool crop = can_crop_by_x && can_crop_by_y;
+
+                vec4 color;
+
+                if (crop) {
+                    // However, when we crop, we also want to crop out anything outside the
+                    // current geometry. This is because the area of the shader is unspecified
+                    // and usually bigger than the current geometry, so if we don't fill pixels
+                    // outside with transparency, the texture will leak out.
+                    //
+                    // When stretching, this is not an issue because the area outside will
+                    // correspond to client-side decoration shadows, which are already supposed
+                    // to be outside.
+                    if (coords_curr_geo.x < 0.0 || 1.0 < coords_curr_geo.x ||
+                            coords_curr_geo.y < 0.0 || 1.0 < coords_curr_geo.y) {
+                        color = vec4(0.0);
+                    } else {
+                        color = texture2D(niri_tex_next, coords_crop.st);
+                        // color = texture2D(niri_tex_prev, (niri_geo_to_tex_prev * coords_prev_geo).st);
+                    }
+                } else {
+                    // If we can't crop, then crossfade.
+                    color = texture2D(niri_tex_next, coords_stretch.st);
+                    vec4 color_prev = texture2D(niri_tex_prev, coords_stretch_prev.st);
+                    color = mix(color_prev, color, niri_clamped_progress);
+                }
+
+                return color;
+            }
+        "
+    }
+
+    config-notification-open-close {
+        // off
+        // duration-ms 250
+        // curve "ease-out-cubic"
+        // spring damping-ratio=0.1 stiffness=1000 epsilon=0.001
+    }
+
+    /-exit-confirmation-open-close {
+        // off
+        // duration-ms 250
+        // curve "ease-out-cubic"
+        // spring damping-ratio=0.1 stiffness=1000 epsilon=0.001
+        // spring damping-ratio=0.6 stiffness=500 epsilon=0.01
+    }
+
+    /-screenshot-ui-open {
+        // off
+        // duration-ms 200
+        // curve "ease-out-quad"
+    }
+}
+
+
+window-rule {
+    // This regular expression is intentionally made as specific as possible,
+    // since this is the default config, and we want no false positives.
+    // You can get away with just app-id="wezterm" if you want.
+    match title="btop"
+    default-column-width {
+        proportion 0.75
+    }
+}
+
+workspace "1" {
+}
+workspace "2" {
+}
+workspace "3" {
+}
+
+workspace "4" {
+}
+
+workspace "5" {
+}
+
+workspace "6" {
+}
+
+workspace "7" {
+}
+
+workspace "8" {
+}
+workspace "9"{
+
+}
+
+
+
+
+
+
+
+
+window-rule { open-maximized true ;}
+
+window-rule {
+    match app-id="foot"
+	match is-active=true
+    match is-focused=true
+    open-maximized false
+    
+}
+
+// GVC
+window-rule {
+    match title=r#"^Meet -.*$"#
+    open-floating true
+    default-floating-position x=50 y=50 relative-to="top-right"
+    open-focused false
+    block-out-from "screencast"
+}
+
+// lame gvc popup
+window-rule {
+    match title=r#"^meet.google.com is sharing your screen.$"#
+    open-floating true
+    open-focused false
+    default-floating-position x=50 y=50 relative-to="bottom-right"
+}
+
+
+
+binds {
+    Mod+P           { spawn "mew-run"; }                
+    Mod+Shift+Return { spawn "footclient"; }               
+	// Print { 
+	//        spawn "script" "--command" "XDG_CURRENT_DESKTOP=sway flameshot gui" "/dev/null";
+	//    }
+
+	Print hotkey-overlay-title="Flameshot" { spawn "flameshot" "gui"; }
+
+
+    Mod+Shift+C     { close-window; }
+    Mod+Shift+Q     { quit; }
+
+    Mod+E           { fullscreen-window; }
+
+
+
+	Mod+1 {
+        focus-workspace "1"
+    }
+    Mod+2 {
+        focus-workspace "2"
+    }
+    Mod+3 {
+        focus-workspace "3"
+    }
+    Mod+4 {
+        focus-workspace "4"
+    }
+    Mod+5 {
+        focus-workspace "5"
+    }
+    Mod+6 {
+        focus-workspace "6"
+    }
+    Mod+7 {
+        focus-workspace "7"
+    }
+    Mod+8 {
+        focus-workspace "8"
+    }
+    Mod+9 {
+        focus-workspace "9"
+    }
+    Mod+Shift+1 {
+        move-column-to-workspace "1"
+    }
+    Mod+Shift+2 {
+        move-column-to-workspace "2"
+    }
+    Mod+Shift+3 {
+        move-column-to-workspace "3"
+    }
+    Mod+Shift+4 {
+        move-column-to-workspace "4"
+    }
+    Mod+Shift+5 {
+        move-column-to-workspace "5"
+    }
+    Mod+Shift+6 {
+        move-column-to-workspace "6"
+    }
+    Mod+Shift+7 {
+        move-column-to-workspace "7"
+    }
+    Mod+Shift+8 {
+        move-column-to-workspace "8"
+    }
+    Mod+Shift+9 {
+        move-column-to-workspace "9"
+    }
+
+	Mod+H     { focus-column-left; }
+    Mod+J     { focus-window-down; }
+    Mod+K     { focus-window-up; }
+    Mod+L     { focus-column-right; }
+	Mod+Shift+H     { move-column-left; }
+    Mod+Shift+J     { move-window-down; }
+    Mod+Shift+K     { move-window-up; }
+    Mod+Shift+L     { move-column-right; }
+	Mod+Return { focus-column-first; }
+	Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+Shift+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Shift+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+	Mod+C {
+		consume-window-into-column
+    }
+	Mod+Shift+F {
+        expel-window-from-column
+    }
+
+
+	Mod+R {
+        switch-preset-column-width
+    }
+
+
+
+
+
+
+
+    Mod+F { toggle-window-floating; }
+	Mod+I              { focus-workspace-down; }
+    Mod+U              { focus-workspace-up; }
+
+
+
+    Mod+Shift+E { quit; }
+	Mod+O repeat=false { toggle-overview; }	
+    Mod+Tab { focus-workspace-previous; } 
+}
+

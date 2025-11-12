@@ -1,0 +1,76 @@
+{
+    "height": 25,
+    "spacing": 4,
+    "modules-left": [
+        "niri/workspaces",
+        "niri/mode",
+        "niri/window"
+    ],
+    "modules-right": [
+        "custom/gpu",
+        "custom/mem",
+        "custom/swap",
+        "temperature",
+        "custom/clock-time",
+		"custom/clock-date"
+
+    ],
+
+    "hyprland/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": false,
+        "warp-on-scroll": false,
+		"show-empty": true,
+    },
+	"hyprland/mode": {
+        "format": "{}",
+        "tooltip": false
+    },
+
+	"custom/keyboard-layout": {
+        "exec": "hyprctl devices -j | jq -r '.keyboards[0].active_keymap' | cut -c1-2 || echo 'N/A'",
+        "interval": 1,
+        "format": "┇ {}"
+    },
+	"temperature": {
+        // "thermal-zone": 2,
+        // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
+        "critical-threshold": 80,
+        "format-critical": "[!!{temperatureC}°C!!]",
+        "format": " [{temperatureC}°C] ┇"
+  
+
+	},
+
+"custom/clock-time": {
+    "exec": "date '+%H:%M'",
+    "interval": 5,
+	"format": " {} ┇"
+},
+
+"custom/clock-date": {
+    "exec": "date '+%d.%m (%a)'",
+    "interval": 60,
+	"format": " {} "
+},
+	"custom/gpu": {
+    "exec": "nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits || echo 'N/A'",
+    "interval": 10,
+    "format": " {}°C ┇"
+},
+	"custom/mem": {
+        "exec": "awk '/MemTotal/ {total=$2} /MemAvailable/ {avail=$2} END {printf(\"%.0f\", (total-avail)/total * 100)}' /proc/meminfo || echo 'N/A'",
+        "interval": 10,
+        "format": "[MEM] {}% ┇"
+    },
+	"custom/swap": {
+        "exec": "awk '/SwapTotal/ {total=$2} /SwapFree/ {free=$2} END {if (total>0) printf(\"%.0f\", (total-free)/total*100); else print \"0\"}' /proc/meminfo || echo 'N/A'",
+        "interval": 10,
+        "format": "[SWAP] {}% ┇"
+    },
+	"custom/window-title": {
+        "exec": "hyprctl activewindow -j | jq -r '.title' || echo ''",
+        "interval": 1,
+        "format": "{} "
+    }
+}
