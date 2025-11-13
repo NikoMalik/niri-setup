@@ -33,7 +33,6 @@ environment {
 
     // DISPLAY/WAYLAND
     WAYLAND_DISPLAY "wayland-1"
-    DISPLAY ":0"
 }
 
 spawn-at-startup "dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
@@ -677,5 +676,13 @@ binds {
     Mod+Shift+E { quit; }
 	Mod+O repeat=false { toggle-overview; }	
     Mod+Tab { focus-workspace-previous; } 
+}
+
+
+debug {
+	disable-resize-throttling
+    emulate-zero-presentation-time
+	disable-direct-scanout
+	disable-cursor-plane
 }
 
