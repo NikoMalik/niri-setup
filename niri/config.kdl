@@ -81,6 +81,11 @@ output "HDMI-A-1" {
     transform "normal"
 }
 
+window-rule {
+    match app-id="steam" title=r#"^notificationtoasts_\d+_desktop$"#
+    default-floating-position x=10 y=10 relative-to="bottom-right"
+}
+
 
 // =====================
 //   INPUT DEVICES
@@ -165,7 +170,7 @@ window-rule {
 //   LAYOUT & LOOK
 // =====================
 layout {
-    gaps 10
+    gaps 5
 	always-center-single-column
 	center-focused-column "never"
 	preset-column-widths {
@@ -194,25 +199,12 @@ layout {
 }
 
 
-// Flameshot
-window-rule {
-	match app-id="flameshot-pin"
-	open-floating true
-	focus-ring {
-		width 4
-	}
-}
 
 window-rule {
 	match app-id="flameshot gui"
 	open-floating true
 }
 
-
-window-rule {
-	match app-id="flameshot" title="Save screenshot"
-	open-floating true
-}
 
 
 window-rule {
@@ -684,5 +676,8 @@ debug {
     emulate-zero-presentation-time
 	disable-direct-scanout
 	disable-cursor-plane
+	wait-for-frame-completion-before-queueing
 }
+
+
 
