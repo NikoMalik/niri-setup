@@ -41,7 +41,7 @@ spawn-at-startup "sh" "-c" "foot --server"
 spawn-at-startup "~/.config/niri/start"
 spawn-at-startup "waybar"
 spawn-at-startup "flameshot"
-spawn-at-startup "sh" "-c" "swaybg -m fill -i ~/pictures/win95_clouds.png"
+// spawn-at-startup "sh" "-c" "swaybg -m fill -i ~/pictures/bua.png"
 
 
 layer-rule {
@@ -660,8 +660,16 @@ binds {
 
 
     Mod+F { toggle-window-floating; }
-	Mod+I              { focus-workspace-down; }
-    Mod+U              { focus-workspace-up; }
+	//Mod+I              { focus-workspace-down; }
+	Mod+I {
+        center-visible-columns
+    }
+
+    //Mod+U              { focus-workspace-up; }
+	Mod+U {
+        expand-column-to-available-width
+    }
+
 
 
 
@@ -676,7 +684,7 @@ debug {
     emulate-zero-presentation-time
 	disable-direct-scanout
 	disable-cursor-plane
-	wait-for-frame-completion-before-queueing
+	// wait-for-frame-completion-before-queueing
 }
 
 
