@@ -30,6 +30,7 @@ environment {
     // Java and D-Bus
     _JAVA_AWT_WM_NONREPARETING "1"
     MOZ_DBUS_REMOTE "1"
+	QT_SCREEN_SCALE_FACTORS "1;1"
 
     // DISPLAY/WAYLAND
     WAYLAND_DISPLAY "wayland-1"
@@ -84,6 +85,7 @@ output "HDMI-A-1" {
 window-rule {
     match app-id="steam" title=r#"^notificationtoasts_\d+_desktop$"#
     default-floating-position x=10 y=10 relative-to="bottom-right"
+	open-focused false
 }
 
 
@@ -203,7 +205,18 @@ layout {
 window-rule {
 	match app-id="flameshot gui"
 	open-floating true
+	open-fullscreen true
+	open-maximized false
 }
+
+window-rule {
+	match app-id="flameshot"
+	open-floating true
+	open-fullscreen true
+	open-maximized false
+}
+
+
 
 
 
@@ -529,6 +542,7 @@ workspace "9"{
 
 window-rule { open-maximized true ;}
 
+
 window-rule {
     match app-id="foot"
 	match is-active=true
@@ -557,7 +571,7 @@ window-rule {
 
 
 binds {
-    Mod+P           { spawn "mew-run"; }                
+    Mod+P           { spawn "fuzzel"; }                
     Mod+Shift+Return { spawn "footclient"; }               
 	// Print { 
 	//        spawn "script" "--command" "XDG_CURRENT_DESKTOP=sway flameshot gui" "/dev/null";
@@ -627,6 +641,10 @@ binds {
     Mod+Shift+9 {
         move-column-to-workspace "9"
     }
+
+    Mod+Minus { set-window-height "-10%"; }
+    Mod+Equal { set-window-height "+10%"; }
+
 
 	Mod+H     { focus-column-left; }
     Mod+J     { focus-window-down; }
