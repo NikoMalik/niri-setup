@@ -1,11 +1,18 @@
 {
-    "height": 25,
-    "spacing": 4,
+    "layer": "top",
+    "position": "top",
+    "height": 0,
+    "spacing": 4,	
+	"margin-top": 12,
+    "margin-bottom": 5,
+    "margin-left": 20,
+    "margin-right": 20,
     "modules-left": [
-        "niri/workspaces",
-        "niri/mode",
-        "niri/window"
+        "niri/workspaces"
     ],
+	"modules-center" : [
+		"niri/window"
+	],
     "modules-right": [
         "custom/gpu",
         "custom/mem",
@@ -16,16 +23,6 @@
 
     ],
 
-    "hyprland/workspaces": {
-        "disable-scroll": true,
-        "all-outputs": false,
-        "warp-on-scroll": false,
-		"show-empty": true,
-    },
-	"hyprland/mode": {
-        "format": "{}",
-        "tooltip": false
-    },
 
 	"custom/keyboard-layout": {
         "exec": "hyprctl devices -j | jq -r '.keyboards[0].active_keymap' | cut -c1-2 || echo 'N/A'",

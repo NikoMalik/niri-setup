@@ -43,6 +43,7 @@
   border-radius: 0px;
   /* :[ */
   min-height: 0px;
+
 }
 
 window#waybar {
@@ -53,6 +54,8 @@ window#waybar {
 
 #workspaces {
   background-color: transparent;
+  margin-left: 0px;
+
 }
 
 #workspaces button {
