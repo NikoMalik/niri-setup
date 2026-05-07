@@ -14,18 +14,22 @@ environment {
     XDG_SESSION_DESKTOP "niri"
     SDL_VIDEODRIVER "wayland"
     QT_QPA_PLATFORM "wayland"
+    QT_QPA_PLATFORMTHEME "gtk3"
+
     CLUTTER_BACKEND "wayland"
 
     // NVIDIA 
     LIBVA_DRIVER_NAME "nvidia"
+	NVD_BACKEND       "direct"
     GBM_BACKEND "nvidia-drm"
     VDPAU_DRIVER "nvidia"
     __GLX_VENDOR_LIBRARY_NAME "nvidia"
+	__GL_SYNC_TO_VBLANK "0"
     __EGL_VENDOR_LIBRARY_NAME "nvidia"
     __EGL_VENDOR_LIBRARY_FILENAMES "/usr/share/glvnd/egl_vendor.d/10_nvidia.json"
     __VK_LAYER_NV_optimus "NVIDIA_only"
-    __NV_PRIME_RENDER_OFFLOAD "1"
-    WLR_NO_HARDWARE_CURSORS "1"
+	__GL_SHADER_DISK_CACHE_SIZE "12000000000"
+	GSK_RENDERER "ngl"
 
     // Java and D-Bus
     _JAVA_AWT_WM_NONREPARETING "1"
@@ -34,15 +38,21 @@ environment {
 
     // DISPLAY/WAYLAND
     WAYLAND_DISPLAY "wayland-1"
+
+
+	MI_VERBOSE "0" 
+	MI_SHOW_STATS "0" 
+	MI_SHOW_ERRORS "0"
 }
 
-spawn-at-startup "dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
-spawn-at-startup "gentoo-pipewire-launcher"
-spawn-at-startup "sh" "-c" "foot --server"
-spawn-at-startup "~/.config/niri/start"
-spawn-at-startup "waybar"
+// spawn-at-startup "dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
+// spawn-at-startup "gentoo-pipewire-launcher"
+spawn-at-startup "sh" "-c" "kitty --start-as=hidden --single-instance"
+// spawn-at-startup "~/.config/niri/start"
+// spawn-at-startup "waybar"
+spawn-at-startup "qs" "-c" "noctalia-shell" "--no-duplicate"
 spawn-at-startup "flameshot"
-spawn-at-startup "sh" "-c" "swaybg -m fill -i ~/pictures/arleknino.jpg"
+// spawn-at-startup "sh" "-c" "swaybg -m fill -i ~/pictures/les.png"
 
 
 layer-rule {
@@ -76,10 +86,10 @@ cursor {
 //   MONITOR SETTINGS
 // =====================
 output "HDMI-A-1" {
-    mode "1920x1080@143.981"
-    scale 1
+  mode "1920x1080@143.981"
+  scale 1
 	position x=0 y=0
-    transform "normal"
+  transform "normal"
 }
 
 window-rule {
@@ -138,6 +148,16 @@ window-rule {
     open-on-output "HDMI-A-1"
 }
 
+window-rule {
+
+match app-id=r#"zen$"# title="^Picture-in-Picture$"
+
+open-floating true
+
+default-floating-position x=16 y=48 relative-to="bottom-left"
+
+}
+
 
 
 // Indicate screencasted windows with red colors.
@@ -172,7 +192,7 @@ window-rule {
 //   LAYOUT & LOOK
 // =====================
 layout {
-    gaps 5
+    gaps 2
 	always-center-single-column
 	center-focused-column "never"
 	preset-column-widths {
@@ -293,11 +313,11 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 animations {
     workspace-switch {
         off
-        // duration-ms 500
+        // duration-ms 100
         // curve "linear"
         // curve "ease-out-cubic"
         // curve "cubic-bezier" 0 1.5 0.5 1
-        // spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+        // spring damping-ratio=0.8 stiffness=523 epsilon=0.0001
 		// spring damping-ratio=2.5 stiffness=2000 epsilon=0.001
 
     }
@@ -542,6 +562,14 @@ window-rule {
     open-maximized false 
 }
 
+window-rule {
+    match app-id="kitty"
+	match is-active=true
+    match is-focused=true
+    open-maximized false 
+}
+
+
 layer-rule {
   match namespace="^launcher$"
   opacity 0.9
@@ -555,7 +583,6 @@ layer-rule {
 
 window-rule {
   match app-id="foot"
-  
 }
 
 
@@ -585,10 +612,8 @@ window-rule {
 
 binds {
     Mod+P           { spawn "fuzzel"; }                
-    Mod+Shift+Return { spawn "footclient"; }               
-	// Print { 
-	//        spawn "script" "--command" "XDG_CURRENT_DESKTOP=sway flameshot gui" "/dev/null";
-	//    }
+    Mod+Shift+Return { spawn "kitty" "-e" "--single-instance"; }               
+		// Mod+Shift+Return { spawn "sh -c 'kitty --single-instance'"; }
 
 	Print hotkey-overlay-title="Flameshot" { spawn "flameshot" "gui"; }
 
@@ -655,8 +680,11 @@ binds {
         move-column-to-workspace "9"
     }
 
-    Mod+Minus { set-window-height "-10%"; }
-    Mod+Equal { set-window-height "+10%"; }
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+
+	Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
 
 
 	Mod+H     { focus-column-left; }
@@ -712,11 +740,15 @@ binds {
 
 debug {
 	disable-resize-throttling
-    emulate-zero-presentation-time
 	disable-cursor-plane
-	wait-for-frame-completion-before-queueing
-	honor-xdg-activation-with-invalid-serial
+	// emulate-zero-presentation-time
+  disable-direct-scanout
 }
+
+
+
+
+include "./noctalia.kdl"
 
 
 
