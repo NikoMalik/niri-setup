@@ -3,7 +3,8 @@ animations {
         slowdown 1.2
 
         workspace-switch {
-            spring damping-ratio=0.82 stiffness=650 epsilon=0.0001
+            // spring damping-ratio=0.82 stiffness=650 epsilon=0.0001
+				off
         }
         window-open {
             duration-ms 280
